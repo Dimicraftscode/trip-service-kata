@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TripServiceKataCore.Exception;
+using TripServiceKataCore.Tests.Builders;
 using TripServiceKataCore.Trip;
 using Xunit;
 
@@ -10,7 +11,6 @@ namespace TripServiceKataCore.Tests
         private static readonly User.User _guest = null;
         private static readonly User.User _unknownUser = new User.User();
         private static readonly User.User _loggedInUser = new User.User();
-        private static readonly User.User _friend = new User.User();
 
         private static User.User _loggedUser = new User.User();
 
@@ -43,10 +43,8 @@ namespace TripServiceKataCore.Tests
         {
             _loggedUser = _loggedInUser;
 
-            _friend.AddFriend(_loggedInUser);
-            _friend.AddTrip(new Trip.Trip());
-
-            var trips = _tripService.GetTripsByUser(_friend);
+            var friend = new UserBuilder().WithFriend(_loggedInUser).WithTrip(new Trip.Trip());
+            var trips = _tripService.GetTripsByUser(friend);
 
             Assert.Single(trips);
         }
