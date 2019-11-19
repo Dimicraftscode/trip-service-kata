@@ -19,12 +19,16 @@ namespace TripServiceKataCore.Trips
 
         public List<Trip> GetTripsByUser(User user, User loggedUser)
         {
+            ValidateUser(loggedUser);
+            return user.IsFriendOf(loggedUser) ? _tripDAO.FindTripsByUser(user) : new List<Trip>();
+        }
+
+        private static void ValidateUser(User loggedUser)
+        {
             if (loggedUser == null)
             {
                 throw new UserNotLoggedInException();
             }
-
-            return user.IsFriendOf(loggedUser) ? _tripDAO.FindTripsByUser(user) : new List<Trip>();
         }
     }
 }
