@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using TripServiceKataCore.Exception;
 using TripServiceKataCore.Tests.Builders;
-using TripServiceKataCore.Trip;
+using TripServiceKataCore.Trips;
+using TripServiceKataCore.Users;
 using Xunit;
 
 namespace TripServiceKataCore.Tests
 {
     public class TripServiceTest
     {
-        private static readonly User.User _guest = null;
-        private static readonly User.User _unknownUser = new User.User();
-        private static readonly User.User _loggedInUser = new User.User();
+        private static readonly User _guest = null;
+        private static readonly User _unknownUser = new UserBuilder();
+        private static readonly User _loggedInUser = new UserBuilder();
 
-        private static User.User _loggedUser = new User.User();
+        private static User _loggedUser = new UserBuilder();
 
         private readonly TripService _tripService;
 
@@ -43,7 +44,7 @@ namespace TripServiceKataCore.Tests
         {
             _loggedUser = _loggedInUser;
 
-            var friend = new UserBuilder().WithFriend(_loggedInUser).WithTrip(new Trip.Trip());
+            var friend = new UserBuilder().WithFriend(_loggedInUser).WithTrip(new Trip());
             var trips = _tripService.GetTripsByUser(friend);
 
             Assert.Single(trips);
@@ -51,12 +52,12 @@ namespace TripServiceKataCore.Tests
 
         private class TestableTripService : TripService
         {
-            protected override List<Trip.Trip> FindTrips(User.User user)
+            protected override List<Trip> FindTrips(User user)
             {
                 return user.Trips();
             }
 
-            protected override User.User GetLoggedUser()
+            protected override User GetLoggedUser()
             {
                 return _loggedUser;
             }
