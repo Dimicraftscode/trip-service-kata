@@ -6,22 +6,14 @@ namespace TripServiceKataCore.Trips
 {
     public class TripService
     {
-        public List<Trip> GetTripsByUser(User user)
+        public List<Trip> GetTripsByUser(User user, User loggedUser)
         {
-            User loggedUser = GetLoggedUser();
-            if (loggedUser != null)
-            {
-                return user.IsFriendOf(loggedUser) ? FindTrips(user) : new List<Trip>();
-            }
-            else
+            if (loggedUser == null)
             {
                 throw new UserNotLoggedInException();
             }
-        }
 
-        protected virtual User GetLoggedUser()
-        {
-            return UserSession.GetInstance().GetLoggedUser();
+            return user.IsFriendOf(loggedUser) ? FindTrips(user) : new List<Trip>();
         }
 
         protected virtual List<Trip> FindTrips(User user)
