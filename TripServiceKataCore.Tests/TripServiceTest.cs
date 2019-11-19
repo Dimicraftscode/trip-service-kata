@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Moq;
 using TripServiceKataCore.Exception;
 using TripServiceKataCore.Tests.Builders;
 using TripServiceKataCore.Trips;
@@ -17,7 +17,9 @@ namespace TripServiceKataCore.Tests
 
         public TripServiceTest()
         {
-            _tripService = new TestableTripService();
+            var tripDAOmock = new Mock<TripDAO>();
+            tripDAOmock.Setup(x => x.FindTripsByUser(It.IsAny<User>())).Returns<User>(x => x.Trips());
+            _tripService = new TripService(tripDAOmock.Object);
         }
 
         [Fact]
@@ -40,14 +42,6 @@ namespace TripServiceKataCore.Tests
             var trips = _tripService.GetTripsByUser(friend, _loggedInUser);
 
             Assert.Single(trips);
-        }
-
-        private class TestableTripService : TripService
-        {
-            protected override List<Trip> FindTrips(User user)
-            {
-                return user.Trips();
-            }
         }
     }
 }
